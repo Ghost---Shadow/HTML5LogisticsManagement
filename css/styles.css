@@ -1,8 +1,16 @@
 .jumbotron{
-    background-color: #51a35f;
+    background-color: #303e73;
     color: #eee;
 }
 
 body{
-    background-color: #82c38d;
+    background-color: #ccc;
+}
+
+#canvascontainer{
+     background-color: #eee;
+}
+
+#errorMsg{
+    color: #e44;
 }
