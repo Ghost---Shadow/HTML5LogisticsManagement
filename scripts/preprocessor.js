@@ -30,24 +30,25 @@ $(document).ready(function(){
 		supply = [100,100];
 		demand = [20,50,70];
 		expenditure = [4,2,3,1,3,2];
-		revenue = 50;		
+		revenue = 10;		
+		for(var i = 0; i < expenditure.length; i++)
+				expenditure[i] -= revenue;	
 
 		// Merge in a single vector	
-		var b = [];
-		$.merge(b,supply);
+		var b = [];		
 		$.merge(b,demand);
+		$.merge(b,supply);
 		
 		// Reserve space for a m x n matrix
 		var n = demand.length + supply.length;
 		var m = demand.length * supply.length;
-		var a = new Array(m);
+		var a = new Array(n);
 		for(var i = 0; i < n; i++)
 			a[i] = new Array(m);
 		
 		for(var i = 0; i < n; i++)
 			for(var j = 0; j < m; j++)
-				a[i][j] = 0;
-		
+				a[i][j] = 0;	
 			
 		// Initialize A
 		i = 0
@@ -62,5 +63,8 @@ $(document).ready(function(){
 			for (var j = offset; j < m; j+=supply.length)				
 				a[i][j] = 1;     
 		}		
+				
+		var result = simplex(a,b,expenditure);
+		graph(result,demand.length,supply.length);
 	});
 });

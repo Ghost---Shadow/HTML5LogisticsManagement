@@ -25,15 +25,14 @@ console.log("\n"+simplex(coeff,b,obj));
 */
 function simplex(coeff,b,obj){
 	var A = createAugmentedMatrix(coeff,b,obj);	
-	linProg(A);	
-	return interpretResults(A,coeff[0].length);	
+	var p = linProg(A);	
+	return interpretResults(A,p);	
 }
 
 function print(A){
-	console.log(A[0]);
-	console.log(A[1]);
-	console.log(A[2]);
-	console.log(A[3]);
+	for(var i = 0; i < A.length; i++)
+		console.log(A[i]);
+	console.log("\n");
 }
 
 /**
@@ -48,11 +47,10 @@ function createAugmentedMatrix(coeff,b,obj){
 	var r = coeff.length; 	
 	
 	// Reserve space for matrix A
-	var A = new Array(r+1);
+	var A = new Array(r);
 	for (var i = 0; i < r+1; i++) {
 		A[i] = new Array(r+c+1);
-	}
-		
+	}		
 	// Insert coefficient matrix
 	for(var i = 0; i < r; i++)
 		for(var j = 0; j < c; j++)
@@ -65,14 +63,14 @@ function createAugmentedMatrix(coeff,b,obj){
 	
 	// Insert RHS
 	for(var i = 0; i < r; i++)
-		A[i][r+c] = b[i];
-	
+		A[i][r+c] = b[i];	
+
 	// Insert objective function
 	for(var j = 0; j < c; j++)
 		A[r][j] = obj[j];
 	for(var j = c; j < r+c + 1; j++)
 		A[r][j] = 0;
-	
+
 	return A;
 }
 
@@ -82,48 +80,60 @@ function createAugmentedMatrix(coeff,b,obj){
 * @param l
 * @return result 
 */
-function interpretResults(A,l){
-	var result = new Array(l+1);
-	var rhs = A[0].length - 1;
-	
-	// Collect the rhs of the row pivot for each column
-	for(var j = 0; j < l; j++){
-		for(var i = 0; i < A.length - 1; i++){
-			if(A[i][j] == 1){
-				result[j] = A[i][rhs];
-				break;
-			}
-		}
+function interpretResults(A,p){
+	var rhs = A[0].length - 1;	
+	var result = Array(p.length).fill(0);	
+
+	for(var j = 0; j < p.length; j++){	
+		try{result[j] = A[p[j]][rhs];}
+		catch(e){}		
 	}
-	// Append maximum value
-	result[l] = A[A.length-1][A[0].length-1];
+	
+	result.push(A[A.length-1][A[0].length-1]);
 	return result;	
 }
 
 /**
 * Runs linear programming on augmented matrix using simplex
 * @param {Array} A
+* @return {Array} p
 */
 function linProg(A){
 	var lastRow = A.length - 1;
 	var lastCol = A[0].length - 1;	
+	var p = [];
 	
-	for(var j = 0; j <= lastCol; j++){
+	while(true){
 		// Skip variables which cannot be increased
-		if(A[lastRow][j] >=0) continue;
+		var j = -1;
+		var smallest = 0;
+		for(var y = 0; y <= lastCol;y++){
+			if(A[lastRow][y] >=0) continue;
+			if(A[lastRow][y] < smallest){
+				smallest = A[lastRow][y];
+				j = y;
+			}
 		
-		// Find index of the smallest ratio
+		}
+		if(j == -1) break;
+		
+		// Find index of the smallest ratio		
 		var i = 0;
 		var smallestRatio = A[i][lastCol]/A[i][j];			
 		for(var x = 1; x < lastRow; x++){
+			if(A[x][j] <= 0) continue;
 			var ratio = A[x][lastCol]/A[x][j];
 			if(smallestRatio > ratio){
 				smallestRatio = ratio;
 				i = x;
 			}
 		}		
-		pivot(A,i,j);		
+		pivot(A,i,j);
+		//print(A);
+		p[j] = i;
 	}
+	//console.log(p);
+	return p;
 }
 
 /**
