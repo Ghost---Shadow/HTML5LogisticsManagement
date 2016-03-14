@@ -84,6 +84,7 @@ function interpretResults(A,p){
 	var rhs = A[0].length - 1;	
 	var result = Array(p.length).fill(0);	
 
+	// Get the chosen basic rows in correct order
 	for(var j = 0; j < p.length; j++){	
 		try{result[j] = A[p[j]][rhs];}
 		catch(e){}		

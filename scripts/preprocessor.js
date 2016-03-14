@@ -5,12 +5,13 @@ $(document).ready(function(){
 		
 		var supply = $("#tSupply").val().split(",");
 		var demand = $("#tDemand").val().split(",");
-		var expenditure = $("#tExpenditure").val().split(",");			
+		var expenditure = $("#tExpenditure").val().split(",");	
+		var revenue = 0;		
 		
 		$("#errorMsg").text("");
 
 		try{
-			var revenue = parseInt($("#tRevenue").val());	
+			revenue = parseInt($("#tRevenue").val());	
 
 			for(var i = 0; i < supply.length; i++)
 				supply[i] = parseInt(supply[i].trim());				
@@ -19,20 +20,22 @@ $(document).ready(function(){
 				demand[i] = parseInt(demand[i].trim());			
 				
 			for(var i = 0; i < expenditure.length; i++)
-				expenditure[i] = parseInt(expenditure[i].trim()) - revenue;	
+				expenditure[i] = parseInt(expenditure[i].trim());	
 			
 		} catch(e){
 			$("#errorMsg").text(e);
 			return;
 		}
-
+		console.log("Supply: "+supply);
+		console.log("Demand: "+demand);
+		console.log("Expenditure: "+expenditure);
 		
-		supply = [100,100];
-		demand = [20,50,70];
-		expenditure = [4,2,3,1,3,2];
-		revenue = 10;		
+		//supply = [100,100];
+		//demand = [20,50,70];
+		//expenditure = [4,2,3,1,3,2];
+		//revenue = 10;		
 		for(var i = 0; i < expenditure.length; i++)
-				expenditure[i] -= revenue;	
+			expenditure[i] -= revenue;	
 
 		// Merge in a single vector	
 		var b = [];		
@@ -65,6 +68,6 @@ $(document).ready(function(){
 		}		
 				
 		var result = simplex(a,b,expenditure);
-		graph(result,demand.length,supply.length);
+		write(result,demand.length,supply.length);
 	});
 });

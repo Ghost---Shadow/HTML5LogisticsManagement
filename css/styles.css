@@ -7,10 +7,12 @@ body{
     background-color: #ccc;
 }
 
-#canvascontainer{
-     background-color: #eee;
+#container{
+    background-color: #eee;
+	font-size: 1.5em;	
 }
 
 #errorMsg{
     color: #e44;
 }
+
